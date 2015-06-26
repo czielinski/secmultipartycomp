@@ -1,0 +1,1053 @@
+%% LyX 2.1.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{beamer}
+\usepackage{mathptmx}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{mathrsfs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+ % this default might be overridden by plain title style
+ \newcommand\makebeamertitle{\frame{\maketitle}}%
+ % (ERT) argument for the TOC
+ \AtBeginDocument{%
+   \let\origtableofcontents=\tableofcontents
+   \def\tableofcontents{\@ifnextchar[{\origtableofcontents}{\gobbletableofcontents}}
+   \def\gobbletableofcontents#1{\origtableofcontents}
+ }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usetheme{Antibes}
+\usecolortheme{beaver}
+\usefonttheme{professionalfonts}
+\useinnertheme{circles}
+
+\setbeamercovered{transparent}
+\setbeamersize{text margin left=0.5cm}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{lmodern}
+\usepackage[protrusion=true,expansion=true]{microtype}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+
+\title{Secure Multi-Party Computations}
+
+
+\subtitle{An Introduction}
+
+
+\author{Christian Zielinski}
+
+
+\date{Last updated in 2015}
+
+\makebeamertitle
+\AtBeginSection[]{
+  \frame<beamer>{ 
+    \frametitle{Outline}   
+    \tableofcontents[currentsection] 
+  }
+}
+\begin{frame}{Outline}
+
+
+\tableofcontents{}
+
+\end{frame}
+
+\section{Introduction}
+
+
+\subsection{The problem}
+\begin{frame}{Secure multi-party computations}
+
+\begin{itemize}
+\item Consider $n$ parties, with private inputs $x_{1},\ldots,x_{n}$
+\item They want to compute a function $f\left(x_{1},\ldots,x_{n}\right)$
+in a secure way
+\item Security means here
+
+\begin{itemize}
+\item Privacy: The respective inputs remain private
+\item Correctness: The output is guaranteed to be correct
+\item Fairness: Each party learns the result
+\end{itemize}
+\item This should even hold when some parties try to cheat
+\item \textbf{The following presentation is primarily based on Ref.~\cite{CDN09,HM97}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Questions at hand}
+
+\begin{itemize}
+\item How to carry out computations without revealing the inputs?
+\item How to deal with cheating (corrupted) parties?
+\item How to define security formally?
+\item What is the upper limit of corrupted parties allowed?
+\item How does this bound depend on the assumption made about the attacker?
+\end{itemize}
+\end{frame}
+
+\subsection{Motivation and applications}
+\begin{frame}{Motivation and applications}
+
+\begin{itemize}
+\item Multi-party computations (\textbf{MPC}s) have a wide\\
+range of applications
+\item Auctions
+
+\begin{itemize}
+\item Several parties are bidding for a product
+\item Winning party and maximum bid should be determined, without revealing
+bids of other parties
+\end{itemize}
+\item Electronic voting schemes
+
+\begin{itemize}
+\item Each party votes for a candidate
+\item Only the result is made public, the votes remain secret
+\end{itemize}
+\item Yao's Millionaires' Problem, c.f.~Ref.~\cite{Yao82}
+
+\begin{itemize}
+\item A group of millionaires wants to find out who is the richest
+\item Nobody wants to reveal how wealthy they are
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Basic Terminology}
+
+
+\subsection{Corrupted parties}
+\begin{frame}{Adversaries}
+
+\begin{itemize}
+\item To discuss secure MPCs, we have to define security
+\item Hence we have to make assumptions about cheating parties
+\item Typically one models them by considering an \textbf{adversary}
+\item This adversary can take over (\textbf{corrupt}) certain subsets of
+parties
+\item We assume one adversary, assuming the worst-case scenario of coordinated
+corrupted parties (\textbf{monolithic adversary})
+\item We assume that at the beginning of the protocol honest (i.e.~not
+corrupted) parties do not know which parties are corrupted
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Passive and active security}
+
+
+We distinguish two cases of corruption
+\begin{definitions}
+\textbf{Passive corruption}:
+\begin{itemize}
+\item Adversary has \textit{full information} of corrupted parties
+\item However, corrupted parties still follow the protocol
+\end{itemize}
+\textbf{Active corruption}:
+\begin{itemize}
+\item Adversary has \textit{full control} over the corrupted parties
+\item Might deviate from the protocol to obtain sensitive data
+\end{itemize}
+\end{definitions}
+
+\end{frame}
+
+\begin{frame}{Communication channels}
+
+
+Parties have to communicate and coordinate
+\begin{definitions}
+The \textbf{information-theoretic model}:
+\begin{itemize}
+\item All parties have pairwise secure channels
+\item Adversary has no access to messages sent between honest parties
+\end{itemize}
+The \textbf{cryptographic model}:
+\begin{itemize}
+\item The adversary has access to all messages sent
+\item Messages cannot be altered, i.e.~the communication channel is authenticated
+\end{itemize}
+\end{definitions}
+
+
+Sometimes we take a \textbf{broadcast} channel into account:
+\begin{itemize}
+\item All honest parties are assumed to receive the message\\
+(\textbf{consensus broadcast})
+\end{itemize}
+\end{frame}
+
+\begin{frame}{$\mathcal{A}$-adversaries}
+
+\begin{itemize}
+\item We define an \textbf{adversary structure} $\mathcal{A}\subset\mathcal{P}\left(P\right)$
+as a family of subsets of the parties $P$
+\item An \textbf{$\mathcal{A}$-adversary} can only corrupt subsets of parties
+in $\mathcal{A}$
+
+\begin{itemize}
+\item $\mathcal{A}$ is monotone
+\end{itemize}
+\item Typically we consider \textbf{threshold adversaries}, i.e.~$\mathcal{A}$
+contains all subsets of up to some cardinality $t$
+\item An \textbf{adaptive} \textbf{$\mathcal{A}$-}adversary can corrupt
+a new party during execution, if the total set is in \textbf{$\mathcal{A}$}
+(otherwise call it \textbf{static})
+\end{itemize}
+\end{frame}
+
+\subsection{Definitions of security}
+\begin{frame}{Security in an ideal world}
+
+\begin{itemize}
+\item How to define security in general?
+\item Here we introduce the concept of an \textbf{ideal world}
+\item A protocol is secure if an adversary does not learn more in the \textbf{real
+world} about the computations then in the ideal case
+\item More formal: Consider a function $f$, which should be securely evaluated
+in a MPC setting
+\item We introduce an ideal functional $\textrm{\ensuremath{\mathcal{F}_{\mathrm{SFE}}^{f}}}$,
+which is \textbf{incorruptible} and \textbf{leaks no private information}
+\item Then the MPC problem reduces to the parties securely sending their
+inputs to $\textrm{\ensuremath{\mathcal{F}_{\mathrm{SFE}}^{f}}}$
+and receive the final result
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Secure implementations}
+
+\begin{itemize}
+\item In the real world $\textrm{\ensuremath{\mathcal{F}_{\mathrm{SFE}}^{f}}}$
+is implemented by a protocol $\pi_{\mathrm{SFE}}^{f}$
+\item We call $\pi_{\mathrm{SFE}}^{f}$ a \textbf{secure implementation}
+of $\textrm{\ensuremath{\mathcal{F}_{\mathrm{SFE}}^{f}}}$ if an adversary
+is unable to learn more about the computations than in the ideal world
+(without help of trusted parties)
+\item More formally assume an $\mathcal{A}$-adversary and let
+\[
+\mathfrak{I}=\mathrm{IDEAL}_{\mathcal{A}}\left(\textrm{\ensuremath{\mathcal{F}_{\mathrm{SFE}}^{f}}}\right)
+\]
+denote what an adversary learns in the ideal world
+\item Similarly define
+\[
+\mathfrak{R}=\mathrm{REAL}_{\mathcal{A}}\left(\pi_{\mathrm{SFE}}^{f}\right)
+\]
+for the execution of the protocol in the real world
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Degrees of security}
+
+\begin{itemize}
+\item With $\mathrm{SIM}\left(\mathfrak{I}\right)$ we denote a \textbf{simulated
+protocol} using only the information of $\mathfrak{I}$, which we
+can compare with the real world protocol \textrm{$\mathfrak{R}$}
+\item If $\mathfrak{R}$ contains no more information than $\mathrm{SIM}\left(\mathfrak{I}\right)$:
+
+\begin{itemize}
+\item $\pi_{\mathrm{SFE}}^{f}$ is a \textbf{perfect secure implementation}
+\item No unwanted information leaks
+\end{itemize}
+\item If $\mathfrak{R}$ only contains additional statistical deviations
+from $\mathrm{SIM}\left(\mathfrak{I}\right)$:
+
+\begin{itemize}
+\item $\pi_{\mathrm{SFE}}^{f}$ is a \textbf{statistically secure implementation}
+\end{itemize}
+\item If $\mathfrak{R}$ is only computationally indistinguishable from
+$\mathrm{SIM}\left(\mathfrak{I}\right)$:
+
+\begin{itemize}
+\item $\pi_{\mathrm{SFE}}^{f}$ is a \textbf{computationally secure implementation}
+\item Adversary cannot distinguish due to computational bounds
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Protocols for Multi-Party Computations}
+
+
+\subsection{Overview}
+\begin{frame}{Threshold adversaries}
+
+\begin{itemize}
+\item We focus on threshold adversaries, i.e.~the adversary can corrupt
+any set of parties up to cardinality $t$
+\item In the information-theoretic with adaptive adversaries we have the
+following results:
+\begin{table}
+\begin{centering}
+\begin{tabular}{|c|c|c|c|}
+\hline 
+ & Passive & Active w/ BC & Active w/o BC\tabularnewline
+\hline 
+\hline 
+Perfect & $n/2$ & $n/3$ & $n/3$\tabularnewline
+\hline 
+Statistical & $n/2$ & $n/2$ & $n/3$\tabularnewline
+\hline 
+Computational & $n$ & $n/2$ & $n/2$\tabularnewline
+\hline 
+\end{tabular}
+\par\end{centering}
+
+\protect\caption{Maximal obtainable threshold $t$ with $n$ parties (taken from Ref.~\cite{CDN09})}
+\end{table}
+
+\item Here we do not discuss general $\mathcal{A}$-adversaries, see Ref.~\cite{CDN09}
+\end{itemize}
+\end{frame}
+
+\subsection{Passive secure protocol}
+\begin{frame}{Perfect security with passive adversary}
+
+\begin{itemize}
+\item Assume $n$ parties and a passive threshold adversary\\
+with threshold $t$
+\item We construct a perfectly secure protocol in the information-model
+theoretic for $t<n/2$
+\item We employ Shamir's $\left(t+1,n\right)$-scheme, calculating\\
+in a finite field $\mathbb{F}$
+\item Assume parties agreed to calculate $s'=\mathfrak{O}\left(s\right)$
+with secret $s$
+
+\begin{itemize}
+\item Secret $s$ has been securely shared, so that party $i$ has share
+$s_{i}$
+\item Carry out operations $s'_{i}=\mathfrak{O}_{i}\left(s_{i}\right)$
+\item Shares $\left\{ s'_{i}\right\} $ allow to uniquely reconstruct $s'$
+by $t+1$ parties
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Recap: Shamir's scheme}
+
+\begin{itemize}
+\item Assume $n$ parties and threshold $1\leq t\leq n$
+\item Take a finite field $\mathbb{F}$ with $\left|\mathbb{F}\right|\geq n+1$
+\item Let $s\in\mathbb{F}$ be the secret and define distinct elements $P_{1},\ldots,P_{n}\in\mathbb{F}\backslash\left\{ 0\right\} $ 
+\item Sample a random polynomial $p$ with $\deg p\leq t-1$ and $p\left(0\right)=s$
+\item Protocol:
+
+\begin{itemize}
+\item Distribution phase: dealer shares $s_{i}=p\left(P_{i}\right)$ privately
+with party $i$
+\item Reconstruction phase: $\geq t$ parties can reconstruct $p\left(x\right)$\\
+(and hence $p\left(0\right)=s$)
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Recap: Addition}
+
+\begin{itemize}
+\item Assume $P_{i}$ has share $a_{i}$ and $b_{i}$
+\item Assume $a$ and $b$ have been shared with (random) polynomials $p_{a}$
+and $p_{b}$ of degree $\leq t$
+\item We want to securely evaluate $c=a+b$
+
+\begin{itemize}
+\item Each party adds $c_{i}=a_{i}+b_{i}$ locally
+\item The $\left\{ c_{i}\right\} $ uniquely determine the polynomial $p_{c}=p_{a}+p_{b}$
+\item Polynomial $p_{c}$ encodes the result as $p_{c}\left(0\right)=p_{a}\left(0\right)+p_{b}\left(0\right)=a+b=c$
+\end{itemize}
+\item As $\deg p_{c}\leq t$ we find that $t+1$ parties can reconstruct
+$c$
+\item In the special case of adding a (public) constant $k$ party $i$
+just calculates $s'_{i}=s_{i}+k$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Recap: Multiplication}
+
+\begin{itemize}
+\item The case of multiplying by a (public) constant $k$ is similar
+\item To securely evaluate $s'=k\cdot s$, every party calculates $s'_{i}=s_{i}\cdot k$
+\item Shares $\left\{ s'_{i}\right\} $ determine polynomial $p_{s'}=k\cdot p_{s}$,
+which encodes $p_{s'}\left(0\right)=k\cdot p_{s}\left(0\right)=k\cdot s=s'$
+\item What about the general case of $c=a\cdot b$ with $a$ and $b$ secretly
+shared?
+\item Every party can calculate $a_{i}\cdot b_{i}$
+
+\begin{itemize}
+\item Uniquely determines the polynomial $p_{c}=p_{a}\cdot p_{b}$
+\item Decodes the result as $p_{c}\left(0\right)=p_{a}\left(0\right)\cdot p_{b}\left(0\right)=a\cdot b=c$
+\item \textbf{But is of degree $\mathbf{deg\:p_{c}\leq2t}$!}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Secure degree reduction (I)}
+
+\begin{itemize}
+\item As $t<n/2$ we can at least uniquely define $p_{c}$
+\item Now \textbf{securely reduce the degree} of $p_{c}$, so that $\deg p_{c}\leq t$
+\item First observe by means of Lagrange interpolation
+\[
+a\cdot b=\sum_{1\leq i\leq n}\underbrace{\left[\frac{\prod_{1\leq j\leq n}^{j\neq i}\left(-P_{j}\right)}{\prod_{1\leq j\leq n}^{j\neq i}\left(P_{i}-P_{j}\right)}\right]}_{\equiv r_{i}}a_{i}\cdot b_{i}
+\]
+
+\item Hence we have a linear combination of the result $c$ in terms of
+shares $\left\{ a_{i}\cdot b_{i}\right\} $ at hand
+\item The \textbf{recombination vector} $r_{1},\ldots,r_{n}$ can be calculated
+from public information
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Secure degree reduction (II)}
+
+\begin{itemize}
+\item In the next step each party acts as a dealer and \textbf{re-shares}
+their share $a_{i}\cdot b_{i}$ using a polynomial $\mathfrak{c}_{i}$
+of $\deg\mathfrak{c}_{i}\leq t$
+\item This results in party $i$ having shares $u_{ji}$ ($j=1,\ldots,n$)
+\item We can then consider the polynomial
+\[
+\mathfrak{c}=\sum_{1\leq i\leq n}r_{i}\cdot\mathfrak{c}_{i}
+\]
+
+\item Observe that $\deg\mathfrak{c}\leq t$ and
+\[
+\mathfrak{c}\left(0\right)=\sum_{1\leq i\leq n}r_{i}\cdot\mathfrak{c}_{i}\left(0\right)=\sum_{1\leq i\leq n}r_{i}\cdot a_{i}b_{i}=a\cdot b=c
+\]
+
+\item Hence party $i$ computes
+\[
+c_{i}=\sum_{1\leq\ell\leq n}r_{\ell}\cdot u_{\ell i}=\sum_{1\leq\ell\leq n}r_{\ell}\cdot\mathfrak{c}_{\ell}\left(P_{i}\right)=\mathfrak{c}\left(P_{i}\right),
+\]
+which is a $\left(t+1,n\right)$-SSS share $c_{i}$ of $c=a\cdot b$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Privacy}
+
+\begin{itemize}
+\item Party $i$ only deals with their respective shares
+\item After reconstruction party $i$ has share $c_{i}$ of result $c=a+b$
+or $c=a\cdot b$
+\item Shares belong to a $\left(t+1,n\right)$-SSS, but adversary can only
+corrupt up to $t$ parties
+\item No information about other parties' input besides what is implied
+by their shares and the final result
+\end{itemize}
+\end{frame}
+
+\begin{frame}{General functions (I)}
+
+\begin{itemize}
+\item Using addition and multiplication we can compute more general functions
+\item We represent the function as an arithmetic circuit:
+\begin{figure}
+\begin{centering}
+\includegraphics[width=0.3\columnwidth]{figures/arithmetic_circuit}
+\par\end{centering}
+
+\protect\caption{A simple arithmetic circuit}
+\end{figure}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{General functions (II)}
+
+\begin{itemize}
+\item We can do this without loss of generality (if $f$ is feasible)
+\item Well known in the special case of $\mathbb{F}=\left\{ 0,1\right\} $,
+so called Boolean circuits
+\item Any computable function can be represented using only \textsc{and}
+and \textsc{not} gates
+
+\begin{itemize}
+\item \textsc{$a$ and $b$} can be represented by $a\cdot b$
+\item \textsc{not} $a$ can be represented by $1-a$
+\item The computer is a ``proof by example''
+\end{itemize}
+\item In the general case represent a function $f:\mathbb{F}^{n}\to\mathbb{F}$
+by an arithmetic circuit consisting of addition and multiplication
+gates
+\item Calculations proceed gate by gate
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The protocol}
+
+
+To compute a function $y=f\left(x_{1},\ldots,x_{n}\right)$, we represent
+it as an arithmetic circuit
+\begin{itemize}
+\item Each party begins with private input $x_{i}\in\mathbb{F}$ and shares
+it using a $\left(t+1,n\right)$-SSS with all participants
+\item The calculation proceeds gate by gate, so that at each point all inputs
+and intermediate results are shared with a $\left(t+1,n\right)$-SSS
+\item From all remaining gates we randomly choose one for which all inputs
+are available
+\item At the end $P_{i}$ broadcasts its share $y_{i}$ of the final result
+$y=f\left(x_{1},\ldots,x_{n}\right)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Correctness and privacy}
+
+\begin{itemize}
+\item Correctness follows from correctness of Shamir's scheme and algorithms
+for addition and multiplication
+\item Privacy follows from the facts that:
+
+\begin{itemize}
+\item The adversary was assumed to only corrupt up to $t$ parties
+\item All values are shared with a $\left(t+1,n\right)$-scheme, so the
+adversary cannot interfere anything about the honest party's inputs
+\item The corrupted parties only learn their own inputs and outputs
+\end{itemize}
+\item \textit{Everybody} learns the final result (fairness)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tightness of bound (I)}
+
+\begin{itemize}
+\item What if $t\geq n/2$?
+\item Then there is no protocol with \textbf{perfect privacy} and \textbf{perfect
+correctness}
+
+\begin{itemize}
+\item Assuming correctness, a infinite powerful passive advisor can\\
+violate privacy!
+\end{itemize}
+\item An example:
+
+\begin{itemize}
+\item Consider two parties $P_{i}$ with input bit $b_{i}$ ($i=1,2$)
+\item They want to securely compute $r=b_{1}\wedge b_{2}$
+\item Both have additional randomness $r_{i}\in\left\{ 0,1\right\} ^{\star}$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tightness of bound (II)}
+
+\begin{itemize}
+\item Both are exchanging messages $m_{ij}$, $j=1,\ldots,N$.\\
+Define the \textbf{transcript}
+\[
+\mathscr{T}=\left(m_{11},m_{21},m_{12},m_{22},\ldots,m_{1N},m_{2N},r\right)
+\]
+
+\item Let $\mathscr{T}\left(b_{1},b_{2}\right)$ be the set of transcripts
+for given $b_{1}$ and $b_{2}$
+\item Can then show that
+\[
+\mathscr{T}\left(0,0\right)\cap\mathscr{T}\left(0,1\right)=\textrm{Ø}
+\]
+
+\item Hence if $b_{1}=0$ party $P_{1}$ can check if $\mathscr{T}\in\mathscr{T}\left(0,0\right)$
+or $\mathscr{T}\in\mathscr{T}\left(0,1\right)$ and deduce $b_{2}$
+
+\begin{itemize}
+\item Might be unfeasible in the real world
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{Active secure protocol}
+\begin{frame}{Active adversaries}
+
+\begin{itemize}
+\item We now want to deal with an active adversary
+
+\begin{itemize}
+\item We assume that $t<n/2$ for this part
+\end{itemize}
+\item In the presence of an active adversary a broadcast (BC) channel cannot
+be taken for granted
+
+\begin{itemize}
+\item Corrupted party might send different things to different parties
+\item However, in the case discussed here there are effective protocols
+to emulate a BC
+\end{itemize}
+\item Corrupted parties can now:
+
+\begin{itemize}
+\item Deviate from the protocol
+\item Give wrong inputs
+\item Might even refuse to respond
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Verifiable secret sharing schemes}
+
+\begin{itemize}
+\item We need a \textbf{Verifiable Secret Sharing (VSS)} scheme
+
+\begin{itemize}
+\item A VSS is a SSS, that allows the parties to verify that they have consistent
+shares
+\end{itemize}
+\item We implement the active secure protocol by emulating the previous
+protocol and:
+
+\begin{itemize}
+\item We make all \textbf{parties committed to their respective shares}
+\item We ensure that all shares are computed correctly
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Modeling security}
+
+\begin{itemize}
+\item In the ideal world all a corrupted party can do is specify an alternative
+input $x'_{i}$ for $\textrm{\ensuremath{\mathcal{F}_{\mathrm{SFE}}^{f}}}$
+\item We require that all deviations of the protocol can be modeled by choosing
+alternative inputs
+\item What if a corrupted party refuses to give any input?
+
+\begin{itemize}
+\item The protocol can potentially deadlock
+\item Possible solution: other parties simulate this party with input $x_{i}=0$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Commitments}
+
+\begin{itemize}
+\item How can a party $P_{i}$ commit to a value $a\in\mathbb{F}$?
+\item To model this we introduce another ideal functional $\mathcal{F}_{\mathrm{COM}}$
+
+\begin{itemize}
+\item In the real world this will be implemented collectively by the other
+parties
+\end{itemize}
+\item Can then commit to $a$ and access $a$ via $\mathcal{F}_{\mathrm{COM}}$
+using a interface with given commands
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Interface of $\mathcal{F}_{\mathrm{COM}}$}
+
+\begin{itemize}
+\item We now define an interface for $\mathcal{F}_{\mathrm{COM}}$ consisting
+of commands
+\item For execution \textit{all honest parties have to agree on the command}
+send to $\mathcal{F}_{\mathrm{COM}}$ as the implementation will require
+them to actively participate
+\item Basic commands for committing and revealing of values
+
+\begin{itemize}
+\item Values committed to not known by other parties than the committer
+\end{itemize}
+\item Also implementing manipulation commands
+
+\begin{itemize}
+\item Add and multiply committed shares
+\item Allows us to eventually to emulate $\textrm{\ensuremath{\mathcal{F}_{\mathrm{SFE}}^{f}}}$
+by $\mathcal{F}_{\mathrm{COM}}$ 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Basic commands of $\mathcal{F}_{\mathrm{COM}}$}
+
+\begin{itemize}
+\item \texttt{\textbf{\textsc{commit}}} of $P_{i}$ to $a\in\mathbb{F}$,
+denoted by $P_{i}:\left[a\right]_{i}\Leftarrow a$
+
+\begin{itemize}
+\item After successful execution $\mathcal{F}_{\mathrm{COM}}$ stores $\left(P_{i},a\right)$
+\end{itemize}
+\item \texttt{\textbf{\textsc{public commit}}} of all parties to $a\in\mathbb{F}$
+
+\begin{itemize}
+\item By $\left[a\right]_{i}\Leftarrow a$ we denote the use of the \texttt{\textbf{\textsc{public
+commit}}} command to force $P_{i}$ to commit to $a$
+\item $\mathcal{F}_{\mathrm{COM}}$ stores $a$ for all $P_{i}$
+\end{itemize}
+\item \texttt{\textbf{\textsc{open}}} of $a\in\mathbb{F}$ to all parties
+assuming some $\left[a\right]_{i}$ is stored, denoted by $a\Leftarrow\left[a\right]_{i}$ 
+
+\begin{itemize}
+\item All parties learn $a$
+\end{itemize}
+\item \texttt{\textbf{\textsc{designated open}}} of $a\in\mathbb{F}$ to
+party $P_{j}$ assuming some $\left[a\right]_{i}$ is stored, denoted
+by $P_{j}:a\Leftarrow\left[a\right]_{i}$ 
+
+\begin{itemize}
+\item Party $P_{j}$ learns $a$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Manipulation commands of $\mathcal{F}_{\mathrm{COM}}$}
+
+\begin{itemize}
+\item \texttt{\textbf{\textsc{add}}} of two values $a,b\in\mathbb{F}$,
+assuming some $\left[a\right]_{i}$ and $\left[b\right]_{i}$ is stored
+
+\begin{itemize}
+\item Denoted by $\left[a+b\right]_{i}\leftarrow\left[a\right]_{i}+\left[b\right]_{i}$
+\end{itemize}
+\item \texttt{\textbf{\textsc{multiplication by a constant}}} of $a\in\mathbb{F}$
+with an $\alpha\in\mathbb{F}$, assuming some $\left[a\right]_{i}$
+is stored
+
+\begin{itemize}
+\item Denoted by $\left[\alpha a\right]_{i}\leftarrow\alpha\left[a\right]_{i}$
+\end{itemize}
+\item \texttt{\textbf{\textsc{transfer}}} of $a\in\mathbb{F}$ to all parties
+assuming some $\left[a\right]_{i}$ is stored
+
+\begin{itemize}
+\item $P_{j}$ learns $a$ and commits to it, denoted by $\left[a\right]_{j}\leftarrow\left[a\right]_{i}$
+\end{itemize}
+\item \texttt{\textbf{\textsc{multiplication}}} of two values $a,b\in\mathbb{F}$,
+assuming some $\left[a\right]_{i}$ and $\left[b\right]_{i}$ is stored
+
+\begin{itemize}
+\item Denoted by $\left[a\cdot b\right]_{i}\leftarrow\left[a\right]_{i}\cdot\left[b\right]_{i}$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implementation}
+
+\begin{itemize}
+\item The \texttt{\textbf{\textsc{transfer}}} and \texttt{\textbf{\textsc{multiplication}}}
+commands are high level commands
+
+\begin{itemize}
+\item Can be implemented using the other commands
+\end{itemize}
+\item As an example we show how to implement the \texttt{\textbf{\textsc{multiplication}}}
+command
+\item For brevity we omit here the implementation of the \texttt{\textbf{\textsc{transfer}}}
+command
+
+\begin{itemize}
+\item Details can be found in \cite{CDN09}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The \texttt{\textbf{\textsc{multiplication}}} command}
+
+
+We implement $\left[a\cdot b\right]_{i}\leftarrow\left[a\right]_{i}\cdot\left[b\right]_{i}$
+\begin{enumerate}
+\item $P_{i}:\left[c\right]_{i}\Leftarrow a\cdot b$ ($P_{i}$ knows $a$
+and $b$)
+\end{enumerate}
+
+If $P_{i}$ is honest, $c$ will be correct. But $P_{i}$ might cheat.
+Hence every $P_{k}$ carries out the following consistency check:
+\begin{enumerate}
+\item $P_{i}$ chooses $\alpha\in\mathbb{F}$ uniform at random
+\item $P_{i}:\left[\alpha\right]_{i}\Leftarrow\alpha$ (\texttt{\textbf{\textsc{commit}}}
+to $\alpha$)
+\item $P_{i}:\left[\gamma\right]_{i}\Leftarrow\alpha b$ (\texttt{\textbf{\textsc{commit}}}
+to $\alpha b$)
+\item $P_{k}$ broadcasts a \textbf{challenge} $e\in\mathbb{F}$ uniform
+at random
+\item $\left[A\right]_{i}\leftarrow e\left[a\right]_{i}+\left[\alpha\right]_{i}$;
+$A\Leftarrow\left[A\right]_{i}$ (\texttt{\textbf{\textsc{open}}}
+$A$)
+\item $\left[D\right]_{i}\leftarrow A\left[b\right]_{i}-e\left[c\right]_{i}-\left[\gamma\right]_{i}$;
+$D\Leftarrow\left[D\right]_{i}$ (\texttt{\textbf{\textsc{open}}}
+$D$)
+\item The proof is accepted if $D=0$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{The \texttt{\textbf{\textsc{multiplication}}} command}
+
+\begin{itemize}
+\item If $\left[c\right]_{i}=\left[a\right]_{i}\cdot\left[b\right]_{i}$
+then $D=0$.
+\item If $P_{i}$ cheated and committed to a $c=a\cdot b+\Delta$,\\
+then $D\neq0$ with probability $\left|\mathbb{F}\right|^{-1}$
+
+\begin{itemize}
+\item As \textrm{$\mathbb{F}$ is finite, }$D=0$ can still happen coincidentally
+\item There are $n-t>n/2$ honest parties, so probability that all proofs
+of honest parties are accepted in the case of cheating is $\leq\left|\mathbb{F}\right|^{-n/2}$
+\item By repeating the proof several times, probability can be further reduced
+\end{itemize}
+\item We now present the actual protocol using $\mathcal{F}_{\mathrm{COM}}$ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The active secure protocol (I)}
+
+
+\textbf{Input sharing}
+\begin{itemize}
+\item Party $P_{i}$ holds input $x_{i}$ and shares it using Shamir's scheme
+\item Ensure correct shares and that parties are committed to their shares
+\end{itemize}
+
+Protocol
+\begin{enumerate}
+\item $P_{i}:\left[x_{i}\right]_{i}\Leftarrow x_{i}$ (\texttt{\textbf{\textsc{commit}}}
+to input)
+\item $P_{i}$ chooses a polynomial $\mathscr{P}_{i}\left(z\right)=x_{i}+\sum_{j=1}^{t}\alpha_{j}z^{j}$\\
+uniform at random
+\item $P_{i}:\left[\alpha_{j}\right]_{i}\Leftarrow\alpha_{j}$, $\forall j$
+(\texttt{\textbf{\textsc{commit}}} to coefficients)
+\item $P_{i}:\left[\mathscr{P}_{i}\left(P_{\ell}\right)\right]_{i}\leftarrow x_{i}+\sum_{j=1}^{t}\left[\alpha_{j}\right]_{i}P_{\ell}^{j}$,
+$\ell=1,\ldots,n$\\
+(evaluating the shares for all parties)
+\item $\left[\mathscr{P}_{i}\left(P_{\ell}\right)\right]_{\ell}\leftarrow\left[\mathscr{P}_{i}\left(P_{\ell}\right)\right]_{i}$,
+$\ell=1,\ldots,n$\\
+(\texttt{\textbf{\textsc{transfer}}} of all shares to the respective
+parties)
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{The active secure protocol (II)}
+
+
+\textbf{Arithmetic operations}
+\begin{itemize}
+\item Function $f$ was assumed to be represented by an arithmetic circuit
+\end{itemize}
+
+Addition
+\begin{enumerate}
+\item $\left[c\right]_{i}\leftarrow\left[a\right]_{i}+\left[b\right]_{i}$
+\end{enumerate}
+
+Multiplication
+\begin{enumerate}
+\item $\left[d_{i}\right]_{i}\leftarrow\left[a_{i}\right]_{i}\cdot\left[b_{i}\right]_{i}$
+(local multiplication)
+\item $P_{i}$ shares $\left[d_{i}\right]_{i}$ (like in input sharing part),\\
+hence $P_{\ell}$ is committed to $\left[d_{i\ell}\right]_{\ell}$ 
+\item $\left[c_{\ell}\right]_{\ell}\leftarrow\sum_{i=1}^{n}r_{i}\left[d_{i\ell}\right]_{\ell}$\\
+(recombination with recombination vector $r_{1},\ldots,r_{n}$)
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{The active secure protocol (III)}
+
+
+\textbf{Reconstruction}
+\begin{itemize}
+\item Party $P_{i}$ committed to share $y_{i}$
+\end{itemize}
+
+If $P_{j}$ is supposed to learn $y$:
+\begin{enumerate}
+\item $P_{j}:y_{i}\Leftarrow\left[y_{i}\right]_{i}$, $i=1,\ldots,n$
+\end{enumerate}
+
+Note:
+\begin{itemize}
+\item If share $y_{i}$ is stored in $\mathcal{F}_{\mathrm{COM}}$, it is
+consistent
+\item If $P_{i}$ cheats, it might be not recorded and the opening fails
+\item As there are $n-t>t$ honest parties, still can reconstruct $y$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Security of the protocol}
+
+\begin{itemize}
+\item The protocol ensures correct and consistent shares at every point
+\item However, a corrupted party might refuse to carry out a given command
+\item If this happens with party $P_{j}$:
+
+\begin{itemize}
+\item Input phase: other parties take input $x_{j}=0$\\
+and $0$-polynomial for $P_{j}$
+\item Addition cannot fail
+\item Multiplication: if $P_{j}$ has been disqualified, open its input
+and restart the calculation and openly simulate this party
+\item Reconstruction was already discussed
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implementation of $\mathcal{F}_{\mathrm{COM}}$ (I)}
+
+\begin{itemize}
+\item Import question: how to implement the ideal functional $\mathcal{F}_{\mathrm{COM}}$
+by a protocol $\pi_{\mathrm{COM}}$?
+\item We will emulate it by all (honest) parties
+\item Assume information-theoretic scenario with $t<n/3$
+
+\begin{itemize}
+\item In the cryptographic scenario can relax to $t<n/2$
+\end{itemize}
+\item We just give an outline of the realization
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implementation of $\mathcal{F}_{\mathrm{COM}}$ (II)}
+
+\begin{itemize}
+\item Idea: can implement \texttt{\textbf{\textsc{commit}}} of party $P_{j}$
+to $a\in\mathbb{F}$ by using a SSS
+
+\begin{itemize}
+\item Then we easy to implement \texttt{\textbf{\textsc{open}}}, \texttt{\textbf{\textsc{add}}}
+and \texttt{\textbf{\textsc{multiplication by a constant}}} (and hence
+\texttt{\textbf{\textsc{transfer}}} and \texttt{\textbf{\textsc{multiplication)}}}
+\item If $P_{j}$ is honest, adversary will not learn $a$
+\item But: If $P_{j}$ is corrupted, might give \textbf{inconsistent shares}
+\end{itemize}
+\item Hence we have to \textbf{force consistent shares}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Corrupted shares}
+
+\begin{itemize}
+\item Note that if even $<n/3$ shares are corrupted, the secret is still
+uniquely defined
+\item Consider secret $s\in\mathbb{F}$ shares with polynomial $p$ with
+$\deg p\leq t$
+\item The shares are
+\[
+\mathbf{s}=\left(p\left(P_{1}\right),\ldots,p\left(P_{n}\right)\right)
+\]
+
+\item Consider an error $\mathbf{e}\in\mathbb{F}^{n}$ with Hamming-weight
+$w_{\mathrm{H}}\left(\mathbf{e}\right)\leq t$
+\item Then both $\mathbf{s}$ and $\tilde{\mathbf{s}}=\mathbf{s}+\mathbf{e}$
+uniquely define the same $s$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Forcing consistent shares (I)}
+
+\begin{itemize}
+\item In principle can check for consistent shares, if dealer broadcasts
+the polynomial
+
+\begin{itemize}
+\item But this reveals the secret
+\end{itemize}
+\end{itemize}
+
+Instead use algorithm:
+\begin{enumerate}
+\item $P_{j}$ shares secret $s\in\mathbb{F}$ with shares $\left\{ s_{i}\right\} $
+\item $P_{j}$ picks a $r\in\mathbb{F}$ uniform at random and shares $\left\{ r_{i}\right\} $
+\item A challenge $e\in\mathbb{F}$ is chosen and $\forall i$ party $P_{i}$
+computes
+\[
+a_{i}=e\cdot s_{i}+r_{i}
+\]
+
+\item Then make consistency check of $\left\{ a_{i}\right\} $ for value
+$a=e\cdot s+r$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Forcing consistent shares (II)}
+
+\begin{itemize}
+\item Value $a$ is randomly distributed, revealing is unproblematic
+\item If shares $\left\{ s_{i}\right\} $ and $\left\{ r_{i}\right\} $
+are consistent, so are the $\left\{ a_{i}\right\} $
+\item Otherwise probability that the $\left\{ a_{i}\right\} $ are consistent
+by\\
+coincident is $\left|\mathbb{F}\right|^{-1}$
+\item What if the $\left\{ a_{i}\right\} $ are consistent, but a corrupted
+party broadcasts a value $\tilde{a}_{i}\neq a_{i}$?
+
+\begin{itemize}
+\item We employ \textbf{dispute control}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Dispute control (I)}
+
+\begin{itemize}
+\item With each party we associate a public \textbf{dispute set} $D_{i}\subseteq\left\{ P_{1},\ldots,P_{n}\right\} $
+
+\begin{itemize}
+\item At the beginning $D_{i}=\textrm{Ø}$
+\end{itemize}
+\item If some party $P_{j}$ broadcasts an inconsistent share $\tilde{a}_{j}$:
+
+\begin{itemize}
+\item $P_{j}$ is added to $D_{i}$ ($P_{i}$ is dealer)
+\item If dealer $P_{i}$ is honest $P_{j}\in D_{i}$ means that $P_{j}$
+is corrupted
+\item Test is repeated with $a_{j}=0$ (\textbf{corrected sharing})
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Dispute control (II)}
+
+\begin{itemize}
+\item If in one of the repetitions:
+
+\begin{itemize}
+\item $P_{i}$ broadcasts a polynomial with $p\left(P_{j}\right)\ne0$ for
+$P_{j}\in D_{i}$
+\item $\left|D_{i}\right|>t$ (at least one honest party is in dispute with
+$P_{i}$)
+\end{itemize}
+\item Then: remaining parties accuse dealer $P_{i}$ of being corrupt
+
+\begin{itemize}
+\item All messages from $P_{i}$ will be ignored from now on
+\end{itemize}
+\item Employing dispute control allows us to ensure consistent shares and
+to implement $\mathcal{F}_{\mathrm{COM}}$ (which emulates $\mathcal{F}_{\mathrm{SFE}}^{f}$)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusions}
+
+\begin{itemize}
+\item We showed how to implement MPCs using \textbf{Shamir's Scheme}
+\item For a \textbf{passive} threshold adversary we have to require $t<n/2$
+\item For an \textbf{active} threshold adversary in the information-theoretic
+scenario we need $t<n/3$
+
+\begin{itemize}
+\item Protect against active attacks with \textbf{VSS}s and \textbf{dispute
+control}
+\end{itemize}
+\item \textbf{For more information refer to Ref.~\cite{CDN09,HM97}}
+\end{itemize}
+\end{frame}
+\appendix
+
+\section*{Appendix}
+
+
+\subsection*{For Further Reading}
+\begin{frame}{Bibliography}
+
+
+\bibliographystyle{plain}
+\addcontentsline{toc}{section}{\refname}\bibliography{literature}
+\end{frame}
+
+\end{document}

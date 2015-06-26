@@ -1,0 +1,4669 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass beamer
+\begin_preamble
+\usetheme{Antibes}
+\usecolortheme{beaver}
+\usefonttheme{professionalfonts}
+\useinnertheme{circles}
+
+\setbeamercovered{transparent}
+\setbeamersize{text margin left=0.5cm}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{lmodern}
+\usepackage[protrusion=true,expansion=true]{microtype}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 0
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Secure Multi-Party Computations
+\end_layout
+
+\begin_layout Subtitle
+An Introduction
+\end_layout
+
+\begin_layout Author
+Christian Zielinski
+\end_layout
+
+\begin_layout Date
+Last updated in 2015
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+AtBeginSection[]{
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\backslash
+frame<beamer>{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\backslash
+frametitle{Outline}   
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\backslash
+tableofcontents[currentsection] 
+\end_layout
+
+\begin_layout Plain Layout
+
+  }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Outline
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+The problem
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Secure multi-party computations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Consider 
+\begin_inset Formula $n$
+\end_inset
+
+ parties, with private inputs 
+\begin_inset Formula $x_{1},\ldots,x_{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+They want to compute a function 
+\begin_inset Formula $f\left(x_{1},\ldots,x_{n}\right)$
+\end_inset
+
+ in a secure way
+\end_layout
+
+\begin_layout Itemize
+Security means here
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Privacy: The respective inputs remain private
+\end_layout
+
+\begin_layout Itemize
+Correctness: The output is guaranteed to be correct
+\end_layout
+
+\begin_layout Itemize
+Fairness: Each party learns the result
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+This should even hold when some parties try to cheat
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+The following presentation is primarily based on Ref.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "CDN09,HM97"
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Questions at hand
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+How to carry out computations without revealing the inputs?
+\end_layout
+
+\begin_layout Itemize
+How to deal with cheating (corrupted) parties?
+\end_layout
+
+\begin_layout Itemize
+How to define security formally?
+\end_layout
+
+\begin_layout Itemize
+What is the upper limit of corrupted parties allowed?
+\end_layout
+
+\begin_layout Itemize
+How does this bound depend on the assumption made about the attacker?
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Motivation and applications
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Motivation and applications
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Multi-party computations (
+\series bold
+MPC
+\series default
+s) have a wide
+\begin_inset Newline newline
+\end_inset
+
+range of applications
+\end_layout
+
+\begin_layout Itemize
+Auctions
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Several parties are bidding for a product
+\end_layout
+
+\begin_layout Itemize
+Winning party and maximum bid should be determined, without revealing bids
+ of other parties
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Electronic voting schemes
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Each party votes for a candidate
+\end_layout
+
+\begin_layout Itemize
+Only the result is made public, the votes remain secret
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Yao's Millionaires' Problem, c.f.
+\begin_inset space ~
+\end_inset
+
+Ref.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Yao82"
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+A group of millionaires wants to find out who is the richest
+\end_layout
+
+\begin_layout Itemize
+Nobody wants to reveal how wealthy they are
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Section
+Basic Terminology
+\end_layout
+
+\begin_layout Subsection
+Corrupted parties
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Adversaries
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+To discuss secure MPCs, we have to define security
+\end_layout
+
+\begin_layout Itemize
+Hence we have to make assumptions about cheating parties
+\end_layout
+
+\begin_layout Itemize
+Typically one models them by considering an 
+\series bold
+adversary
+\end_layout
+
+\begin_layout Itemize
+This adversary can take over (
+\series bold
+corrupt
+\series default
+) certain subsets of parties
+\end_layout
+
+\begin_layout Itemize
+We assume one adversary, assuming the worst-case scenario of coordinated
+ corrupted parties (
+\series bold
+monolithic adversary
+\series default
+)
+\end_layout
+
+\begin_layout Itemize
+We assume that at the beginning of the protocol honest (i.e.
+\begin_inset space ~
+\end_inset
+
+not corrupted) parties do not know which parties are corrupted
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Passive and active security
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+We distinguish two cases of corruption
+\end_layout
+
+\begin_layout Definitions
+
+\series bold
+Passive corruption
+\series default
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Adversary has 
+\shape italic
+full information
+\shape default
+ of corrupted parties
+\end_layout
+
+\begin_layout Itemize
+However, corrupted parties still follow the protocol
+\end_layout
+
+\end_deeper
+\begin_layout Definitions
+
+\series bold
+Active corruption
+\series default
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Adversary has 
+\shape italic
+full control
+\shape default
+ over the corrupted parties
+\end_layout
+
+\begin_layout Itemize
+Might deviate from the protocol to obtain sensitive data
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Communication channels
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Parties have to communicate and coordinate
+\end_layout
+
+\begin_layout Definitions
+The 
+\series bold
+information-theoretic model
+\series default
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+All parties have pairwise secure channels
+\end_layout
+
+\begin_layout Itemize
+Adversary has no access to messages sent between honest parties
+\end_layout
+
+\end_deeper
+\begin_layout Definitions
+The 
+\series bold
+cryptographic model
+\series default
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The adversary has access to all messages sent
+\end_layout
+
+\begin_layout Itemize
+Messages cannot be altered, i.e.
+\begin_inset space ~
+\end_inset
+
+the communication channel is authenticated
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+Sometimes we take a 
+\series bold
+broadcast
+\series default
+ channel into account:
+\end_layout
+
+\begin_layout Itemize
+All honest parties are assumed to receive the message
+\begin_inset Newline newline
+\end_inset
+
+(
+\series bold
+consensus broadcast
+\series default
+)
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+-adversaries
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We define an 
+\series bold
+adversary structure
+\series default
+ 
+\begin_inset Formula $\mathcal{A}\subset\mathcal{P}\left(P\right)$
+\end_inset
+
+ as a family of subsets of the parties 
+\begin_inset Formula $P$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+An 
+\series bold
+
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+-adversary
+\series default
+ can only corrupt subsets of parties in 
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+ is monotone
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Typically we consider 
+\series bold
+threshold adversaries
+\series default
+, i.e.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+ contains all subsets of up to some cardinality 
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+An 
+\series bold
+adaptive
+\series default
+ 
+\series bold
+
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+-
+\series default
+adversary can corrupt a new party during execution, if the total set is
+ in 
+\series bold
+
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+
+\series default
+ (otherwise call it 
+\series bold
+static
+\series default
+)
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Definitions of security
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Security in an ideal world
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+How to define security in general?
+\end_layout
+
+\begin_layout Itemize
+Here we introduce the concept of an 
+\series bold
+ideal world
+\end_layout
+
+\begin_layout Itemize
+A protocol is secure if an adversary does not learn more in the 
+\series bold
+real world
+\series default
+ about the computations then in the ideal case
+\end_layout
+
+\begin_layout Itemize
+More formal: Consider a function 
+\begin_inset Formula $f$
+\end_inset
+
+, which should be securely evaluated in a MPC setting
+\end_layout
+
+\begin_layout Itemize
+We introduce an ideal functional 
+\begin_inset Formula $\textrm{\mathcal{F}_{\mathrm{SFE}}^{f}}$
+\end_inset
+
+, which is 
+\series bold
+incorruptible
+\series default
+ and 
+\series bold
+leaks no private information
+\end_layout
+
+\begin_layout Itemize
+Then the MPC problem reduces to the parties securely sending their inputs
+ to 
+\begin_inset Formula $\textrm{\mathcal{F}_{\mathrm{SFE}}^{f}}$
+\end_inset
+
+ and receive the final result
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Secure implementations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In the real world 
+\begin_inset Formula $\textrm{\mathcal{F}_{\mathrm{SFE}}^{f}}$
+\end_inset
+
+ is implemented by a protocol 
+\begin_inset Formula $\pi_{\mathrm{SFE}}^{f}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+We call 
+\begin_inset Formula $\pi_{\mathrm{SFE}}^{f}$
+\end_inset
+
+ a 
+\series bold
+secure implementation
+\series default
+ of 
+\begin_inset Formula $\textrm{\mathcal{F}_{\mathrm{SFE}}^{f}}$
+\end_inset
+
+ if an adversary is unable to learn more about the computations than in
+ the ideal world (without help of trusted parties)
+\end_layout
+
+\begin_layout Itemize
+More formally assume an 
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+-adversary and let
+\begin_inset Formula 
+\[
+\mathfrak{I}=\mathrm{IDEAL}_{\mathcal{A}}\left(\textrm{\mathcal{F}_{\mathrm{SFE}}^{f}}\right)
+\]
+
+\end_inset
+
+denote what an adversary learns in the ideal world
+\end_layout
+
+\begin_layout Itemize
+Similarly define
+\begin_inset Formula 
+\[
+\mathfrak{R}=\mathrm{REAL}_{\mathcal{A}}\left(\pi_{\mathrm{SFE}}^{f}\right)
+\]
+
+\end_inset
+
+for the execution of the protocol in the real world
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Degrees of security
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+With 
+\begin_inset Formula $\mathrm{SIM}\left(\mathfrak{I}\right)$
+\end_inset
+
+ we denote a 
+\series bold
+simulated protocol
+\series default
+ using only the information of 
+\begin_inset Formula $\mathfrak{I}$
+\end_inset
+
+, which we can compare with the real world protocol 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\mathfrak{R}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $\mathfrak{R}$
+\end_inset
+
+ contains no more information than 
+\begin_inset Formula $\mathrm{SIM}\left(\mathfrak{I}\right)$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $\pi_{\mathrm{SFE}}^{f}$
+\end_inset
+
+ is a 
+\series bold
+perfect secure implementation
+\end_layout
+
+\begin_layout Itemize
+No unwanted information leaks
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+If 
+\begin_inset Formula $\mathfrak{R}$
+\end_inset
+
+ only contains additional statistical deviations from 
+\begin_inset Formula $\mathrm{SIM}\left(\mathfrak{I}\right)$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $\pi_{\mathrm{SFE}}^{f}$
+\end_inset
+
+ is a 
+\series bold
+statistically secure implementation
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+If 
+\begin_inset Formula $\mathfrak{R}$
+\end_inset
+
+ is only computationally indistinguishable from 
+\begin_inset Formula $\mathrm{SIM}\left(\mathfrak{I}\right)$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $\pi_{\mathrm{SFE}}^{f}$
+\end_inset
+
+ is a 
+\series bold
+computationally secure implementation
+\end_layout
+
+\begin_layout Itemize
+Adversary cannot distinguish due to computational bounds
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Section
+Protocols for Multi-Party Computations
+\end_layout
+
+\begin_layout Subsection
+Overview
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Threshold adversaries
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We focus on threshold adversaries, i.e.
+\begin_inset space ~
+\end_inset
+
+the adversary can corrupt any set of parties up to cardinality 
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+In the information-theoretic with adaptive adversaries we have the following
+ results:
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="4">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Passive
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Active w/ BC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Active w/o BC
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Perfect
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n/2$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n/3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n/3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Statistical
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n/2$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n/2$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n/3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Computational
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n/2$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n/2$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Maximal obtainable threshold 
+\begin_inset Formula $t$
+\end_inset
+
+ with 
+\begin_inset Formula $n$
+\end_inset
+
+ parties (taken from Ref.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "CDN09"
+
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Here we do not discuss general 
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+-adversaries, see Ref.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "CDN09"
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Passive secure protocol
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Perfect security with passive adversary
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Assume 
+\begin_inset Formula $n$
+\end_inset
+
+ parties and a passive threshold adversary
+\begin_inset Newline newline
+\end_inset
+
+with threshold 
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+We construct a perfectly secure protocol in the information-model theoretic
+ for 
+\begin_inset Formula $t<n/2$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+We employ Shamir's 
+\begin_inset Formula $\left(t+1,n\right)$
+\end_inset
+
+-scheme, calculating
+\begin_inset Newline newline
+\end_inset
+
+in a finite field 
+\begin_inset Formula $\mathbb{F}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Assume parties agreed to calculate 
+\begin_inset Formula $s'=\mathfrak{O}\left(s\right)$
+\end_inset
+
+ with secret 
+\begin_inset Formula $s$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Secret 
+\begin_inset Formula $s$
+\end_inset
+
+ has been securely shared, so that party 
+\begin_inset Formula $i$
+\end_inset
+
+ has share 
+\begin_inset Formula $s_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Carry out operations 
+\begin_inset Formula $s'_{i}=\mathfrak{O}_{i}\left(s_{i}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Shares 
+\begin_inset Formula $\left\{ s'_{i}\right\} $
+\end_inset
+
+ allow to uniquely reconstruct 
+\begin_inset Formula $s'$
+\end_inset
+
+ by 
+\begin_inset Formula $t+1$
+\end_inset
+
+ parties
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Recap: Shamir's scheme
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Assume 
+\begin_inset Formula $n$
+\end_inset
+
+ parties and threshold 
+\begin_inset Formula $1\leq t\leq n$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Take a finite field 
+\begin_inset Formula $\mathbb{F}$
+\end_inset
+
+ with 
+\begin_inset Formula $\left|\mathbb{F}\right|\geq n+1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Let 
+\begin_inset Formula $s\in\mathbb{F}$
+\end_inset
+
+ be the secret and define distinct elements 
+\begin_inset Formula $P_{1},\ldots,P_{n}\in\mathbb{F}\backslash\left\{ 0\right\} $
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+Sample a random polynomial 
+\begin_inset Formula $p$
+\end_inset
+
+ with 
+\begin_inset Formula $\deg p\leq t-1$
+\end_inset
+
+ and 
+\begin_inset Formula $p\left(0\right)=s$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Protocol:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Distribution phase: dealer shares 
+\begin_inset Formula $s_{i}=p\left(P_{i}\right)$
+\end_inset
+
+ privately with party 
+\begin_inset Formula $i$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Reconstruction phase: 
+\begin_inset Formula $\geq t$
+\end_inset
+
+ parties can reconstruct 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+(and hence 
+\begin_inset Formula $p\left(0\right)=s$
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Recap: Addition
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Assume 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ has share 
+\begin_inset Formula $a_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Assume 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ have been shared with (random) polynomials 
+\begin_inset Formula $p_{a}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{b}$
+\end_inset
+
+ of degree 
+\begin_inset Formula $\leq t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+We want to securely evaluate 
+\begin_inset Formula $c=a+b$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Each party adds 
+\begin_inset Formula $c_{i}=a_{i}+b_{i}$
+\end_inset
+
+ locally
+\end_layout
+
+\begin_layout Itemize
+The 
+\begin_inset Formula $\left\{ c_{i}\right\} $
+\end_inset
+
+ uniquely determine the polynomial 
+\begin_inset Formula $p_{c}=p_{a}+p_{b}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Polynomial 
+\begin_inset Formula $p_{c}$
+\end_inset
+
+ encodes the result as 
+\begin_inset Formula $p_{c}\left(0\right)=p_{a}\left(0\right)+p_{b}\left(0\right)=a+b=c$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+As 
+\begin_inset Formula $\deg p_{c}\leq t$
+\end_inset
+
+ we find that 
+\begin_inset Formula $t+1$
+\end_inset
+
+ parties can reconstruct 
+\begin_inset Formula $c$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+In the special case of adding a (public) constant 
+\begin_inset Formula $k$
+\end_inset
+
+ party 
+\begin_inset Formula $i$
+\end_inset
+
+ just calculates 
+\begin_inset Formula $s'_{i}=s_{i}+k$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Recap: Multiplication
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The case of multiplying by a (public) constant 
+\begin_inset Formula $k$
+\end_inset
+
+ is similar
+\end_layout
+
+\begin_layout Itemize
+To securely evaluate 
+\begin_inset Formula $s'=k\cdot s$
+\end_inset
+
+, every party calculates 
+\begin_inset Formula $s'_{i}=s_{i}\cdot k$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Shares 
+\begin_inset Formula $\left\{ s'_{i}\right\} $
+\end_inset
+
+ determine polynomial 
+\begin_inset Formula $p_{s'}=k\cdot p_{s}$
+\end_inset
+
+, which encodes 
+\begin_inset Formula $p_{s'}\left(0\right)=k\cdot p_{s}\left(0\right)=k\cdot s=s'$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+What about the general case of 
+\begin_inset Formula $c=a\cdot b$
+\end_inset
+
+ with 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ secretly shared?
+\end_layout
+
+\begin_layout Itemize
+Every party can calculate 
+\begin_inset Formula $a_{i}\cdot b_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Uniquely determines the polynomial 
+\begin_inset Formula $p_{c}=p_{a}\cdot p_{b}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Decodes the result as 
+\begin_inset Formula $p_{c}\left(0\right)=p_{a}\left(0\right)\cdot p_{b}\left(0\right)=a\cdot b=c$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+But is of degree 
+\begin_inset Formula $\mathbf{deg\:p_{c}\leq2t}$
+\end_inset
+
+!
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Secure degree reduction (I)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+As 
+\begin_inset Formula $t<n/2$
+\end_inset
+
+ we can at least uniquely define 
+\begin_inset Formula $p_{c}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Now 
+\series bold
+securely reduce the degree
+\series default
+ of 
+\begin_inset Formula $p_{c}$
+\end_inset
+
+, so that 
+\begin_inset Formula $\deg p_{c}\leq t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+First observe by means of Lagrange interpolation
+\begin_inset Formula 
+\[
+a\cdot b=\sum_{1\leq i\leq n}\underbrace{\left[\frac{\prod_{1\leq j\leq n}^{j\neq i}\left(-P_{j}\right)}{\prod_{1\leq j\leq n}^{j\neq i}\left(P_{i}-P_{j}\right)}\right]}_{\equiv r_{i}}a_{i}\cdot b_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Hence we have a linear combination of the result 
+\begin_inset Formula $c$
+\end_inset
+
+ in terms of shares 
+\begin_inset Formula $\left\{ a_{i}\cdot b_{i}\right\} $
+\end_inset
+
+ at hand
+\end_layout
+
+\begin_layout Itemize
+The 
+\series bold
+recombination vector
+\series default
+ 
+\begin_inset Formula $r_{1},\ldots,r_{n}$
+\end_inset
+
+ can be calculated from public information
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Secure degree reduction (II)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In the next step each party acts as a dealer and 
+\series bold
+re-shares
+\series default
+ their share 
+\begin_inset Formula $a_{i}\cdot b_{i}$
+\end_inset
+
+ using a polynomial 
+\begin_inset Formula $\mathfrak{c}_{i}$
+\end_inset
+
+ of 
+\begin_inset Formula $\deg\mathfrak{c}_{i}\leq t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+This results in party 
+\begin_inset Formula $i$
+\end_inset
+
+ having shares 
+\begin_inset Formula $u_{ji}$
+\end_inset
+
+ (
+\begin_inset Formula $j=1,\ldots,n$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+We can then consider the polynomial
+\begin_inset Formula 
+\[
+\mathfrak{c}=\sum_{1\leq i\leq n}r_{i}\cdot\mathfrak{c}_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Observe that 
+\begin_inset Formula $\deg\mathfrak{c}\leq t$
+\end_inset
+
+ and
+\begin_inset Formula 
+\[
+\mathfrak{c}\left(0\right)=\sum_{1\leq i\leq n}r_{i}\cdot\mathfrak{c}_{i}\left(0\right)=\sum_{1\leq i\leq n}r_{i}\cdot a_{i}b_{i}=a\cdot b=c
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Hence party 
+\begin_inset Formula $i$
+\end_inset
+
+ computes
+\begin_inset Formula 
+\[
+c_{i}=\sum_{1\leq\ell\leq n}r_{\ell}\cdot u_{\ell i}=\sum_{1\leq\ell\leq n}r_{\ell}\cdot\mathfrak{c}_{\ell}\left(P_{i}\right)=\mathfrak{c}\left(P_{i}\right),
+\]
+
+\end_inset
+
+which is a 
+\begin_inset Formula $\left(t+1,n\right)$
+\end_inset
+
+-SSS share 
+\begin_inset Formula $c_{i}$
+\end_inset
+
+ of 
+\begin_inset Formula $c=a\cdot b$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Privacy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Party 
+\begin_inset Formula $i$
+\end_inset
+
+ only deals with their respective shares
+\end_layout
+
+\begin_layout Itemize
+After reconstruction party 
+\begin_inset Formula $i$
+\end_inset
+
+ has share 
+\begin_inset Formula $c_{i}$
+\end_inset
+
+ of result 
+\begin_inset Formula $c=a+b$
+\end_inset
+
+ or 
+\begin_inset Formula $c=a\cdot b$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Shares belong to a 
+\begin_inset Formula $\left(t+1,n\right)$
+\end_inset
+
+-SSS, but adversary can only corrupt up to 
+\begin_inset Formula $t$
+\end_inset
+
+ parties
+\end_layout
+
+\begin_layout Itemize
+No information about other parties' input besides what is implied by their
+ shares and the final result
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+General functions (I)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Using addition and multiplication we can compute more general functions
+\end_layout
+
+\begin_layout Itemize
+We represent the function as an arithmetic circuit:
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/arithmetic_circuit.pdf
+	width 30col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A simple arithmetic circuit
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+General functions (II)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We can do this without loss of generality (if 
+\begin_inset Formula $f$
+\end_inset
+
+ is feasible)
+\end_layout
+
+\begin_layout Itemize
+Well known in the special case of 
+\begin_inset Formula $\mathbb{F}=\left\{ 0,1\right\} $
+\end_inset
+
+, so called Boolean circuits
+\end_layout
+
+\begin_layout Itemize
+Any computable function can be represented using only 
+\shape smallcaps
+and
+\shape default
+ and 
+\shape smallcaps
+not
+\shape default
+ gates
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\shape smallcaps
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+
+\shape default
+ can be represented by 
+\begin_inset Formula $a\cdot b$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\shape smallcaps
+not
+\shape default
+ 
+\begin_inset Formula $a$
+\end_inset
+
+ can be represented by 
+\begin_inset Formula $1-a$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The computer is a 
+\begin_inset Quotes eld
+\end_inset
+
+proof by example
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+In the general case represent a function 
+\begin_inset Formula $f:\mathbb{F}^{n}\to\mathbb{F}$
+\end_inset
+
+ by an arithmetic circuit consisting of addition and multiplication gates
+\end_layout
+
+\begin_layout Itemize
+Calculations proceed gate by gate
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+The protocol
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+To compute a function 
+\begin_inset Formula $y=f\left(x_{1},\ldots,x_{n}\right)$
+\end_inset
+
+, we represent it as an arithmetic circuit
+\end_layout
+
+\begin_layout Itemize
+Each party begins with private input 
+\begin_inset Formula $x_{i}\in\mathbb{F}$
+\end_inset
+
+ and shares it using a 
+\begin_inset Formula $\left(t+1,n\right)$
+\end_inset
+
+-SSS with all participants
+\end_layout
+
+\begin_layout Itemize
+The calculation proceeds gate by gate, so that at each point all inputs
+ and intermediate results are shared with a 
+\begin_inset Formula $\left(t+1,n\right)$
+\end_inset
+
+-SSS
+\end_layout
+
+\begin_layout Itemize
+From all remaining gates we randomly choose one for which all inputs are
+ available
+\end_layout
+
+\begin_layout Itemize
+At the end 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ broadcasts its share 
+\begin_inset Formula $y_{i}$
+\end_inset
+
+ of the final result 
+\begin_inset Formula $y=f\left(x_{1},\ldots,x_{n}\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Correctness and privacy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Correctness follows from correctness of Shamir's scheme and algorithms for
+ addition and multiplication
+\end_layout
+
+\begin_layout Itemize
+Privacy follows from the facts that:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The adversary was assumed to only corrupt up to 
+\begin_inset Formula $t$
+\end_inset
+
+ parties
+\end_layout
+
+\begin_layout Itemize
+All values are shared with a 
+\begin_inset Formula $\left(t+1,n\right)$
+\end_inset
+
+-scheme, so the adversary cannot interfere anything about the honest party's
+ inputs
+\end_layout
+
+\begin_layout Itemize
+The corrupted parties only learn their own inputs and outputs
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\shape italic
+Everybody
+\shape default
+ learns the final result (fairness)
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Tightness of bound (I)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+What if 
+\begin_inset Formula $t\geq n/2$
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Itemize
+Then there is no protocol with 
+\series bold
+perfect privacy
+\series default
+ and 
+\series bold
+perfect correctness
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Assuming correctness, a infinite powerful passive advisor can
+\begin_inset Newline newline
+\end_inset
+
+violate privacy!
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+An example:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Consider two parties 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ with input bit 
+\begin_inset Formula $b_{i}$
+\end_inset
+
+ (
+\begin_inset Formula $i=1,2$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+They want to securely compute 
+\begin_inset Formula $r=b_{1}\wedge b_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Both have additional randomness 
+\begin_inset Formula $r_{i}\in\left\{ 0,1\right\} ^{\star}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Tightness of bound (II)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Both are exchanging messages 
+\begin_inset Formula $m_{ij}$
+\end_inset
+
+, 
+\begin_inset Formula $j=1,\ldots,N$
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+Define the 
+\series bold
+transcript
+\series default
+
+\begin_inset Formula 
+\[
+\mathscr{T}=\left(m_{11},m_{21},m_{12},m_{22},\ldots,m_{1N},m_{2N},r\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Let 
+\begin_inset Formula $\mathscr{T}\left(b_{1},b_{2}\right)$
+\end_inset
+
+ be the set of transcripts for given 
+\begin_inset Formula $b_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Can then show that
+\begin_inset Formula 
+\[
+\mathscr{T}\left(0,0\right)\cap\mathscr{T}\left(0,1\right)=\textrm{Ø}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Hence if 
+\begin_inset Formula $b_{1}=0$
+\end_inset
+
+ party 
+\begin_inset Formula $P_{1}$
+\end_inset
+
+ can check if 
+\begin_inset Formula $\mathscr{T}\in\mathscr{T}\left(0,0\right)$
+\end_inset
+
+ or 
+\begin_inset Formula $\mathscr{T}\in\mathscr{T}\left(0,1\right)$
+\end_inset
+
+ and deduce 
+\begin_inset Formula $b_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Might be unfeasible in the real world
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Subsection
+Active secure protocol
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Active adversaries
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We now want to deal with an active adversary
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We assume that 
+\begin_inset Formula $t<n/2$
+\end_inset
+
+ for this part
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+In the presence of an active adversary a broadcast (BC) channel cannot be
+ taken for granted
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Corrupted party might send different things to different parties
+\end_layout
+
+\begin_layout Itemize
+However, in the case discussed here there are effective protocols to emulate
+ a BC
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Corrupted parties can now:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Deviate from the protocol
+\end_layout
+
+\begin_layout Itemize
+Give wrong inputs
+\end_layout
+
+\begin_layout Itemize
+Might even refuse to respond
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Verifiable secret sharing schemes
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We need a 
+\series bold
+Verifiable Secret Sharing (VSS)
+\series default
+ scheme
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+A VSS is a SSS, that allows the parties to verify that they have consistent
+ shares
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+We implement the active secure protocol by emulating the previous protocol
+ and:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We make all 
+\series bold
+parties committed to their respective shares
+\end_layout
+
+\begin_layout Itemize
+We ensure that all shares are computed correctly
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Modeling security
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In the ideal world all a corrupted party can do is specify an alternative
+ input 
+\begin_inset Formula $x'_{i}$
+\end_inset
+
+ for 
+\begin_inset Formula $\textrm{\mathcal{F}_{\mathrm{SFE}}^{f}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+We require that all deviations of the protocol can be modeled by choosing
+ alternative inputs
+\end_layout
+
+\begin_layout Itemize
+What if a corrupted party refuses to give any input?
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The protocol can potentially deadlock
+\end_layout
+
+\begin_layout Itemize
+Possible solution: other parties simulate this party with input 
+\begin_inset Formula $x_{i}=0$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Commitments
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+How can a party 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ commit to a value 
+\begin_inset Formula $a\in\mathbb{F}$
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Itemize
+To model this we introduce another ideal functional 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In the real world this will be implemented collectively by the other parties
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Can then commit to 
+\begin_inset Formula $a$
+\end_inset
+
+ and access 
+\begin_inset Formula $a$
+\end_inset
+
+ via 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ using a interface with given commands
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Interface of 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We now define an interface for 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ consisting of commands
+\end_layout
+
+\begin_layout Itemize
+For execution 
+\shape italic
+all honest parties have to agree on the command
+\shape default
+ send to 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ as the implementation will require them to actively participate
+\end_layout
+
+\begin_layout Itemize
+Basic commands for committing and revealing of values
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Values committed to not known by other parties than the committer
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Also implementing manipulation commands
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Add and multiply committed shares
+\end_layout
+
+\begin_layout Itemize
+Allows us to eventually to emulate 
+\begin_inset Formula $\textrm{\mathcal{F}_{\mathrm{SFE}}^{f}}$
+\end_inset
+
+ by 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Basic commands of 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+\shape smallcaps
+commit
+\family default
+\series default
+\shape default
+ of 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ to 
+\begin_inset Formula $a\in\mathbb{F}$
+\end_inset
+
+, denoted by 
+\begin_inset Formula $P_{i}:\left[a\right]_{i}\Leftarrow a$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+After successful execution 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ stores 
+\begin_inset Formula $\left(P_{i},a\right)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+\shape smallcaps
+public commit
+\family default
+\series default
+\shape default
+ of all parties to 
+\begin_inset Formula $a\in\mathbb{F}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+By 
+\begin_inset Formula $\left[a\right]_{i}\Leftarrow a$
+\end_inset
+
+ we denote the use of the 
+\family typewriter
+\series bold
+\shape smallcaps
+public commit
+\family default
+\series default
+\shape default
+ command to force 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ to commit to 
+\begin_inset Formula $a$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ stores 
+\begin_inset Formula $a$
+\end_inset
+
+ for all 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+\shape smallcaps
+open
+\family default
+\series default
+\shape default
+ of 
+\begin_inset Formula $a\in\mathbb{F}$
+\end_inset
+
+ to all parties assuming some 
+\begin_inset Formula $\left[a\right]_{i}$
+\end_inset
+
+ is stored, denoted by 
+\begin_inset Formula $a\Leftarrow\left[a\right]_{i}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+All parties learn 
+\begin_inset Formula $a$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+\shape smallcaps
+designated open
+\family default
+\series default
+\shape default
+ of 
+\begin_inset Formula $a\in\mathbb{F}$
+\end_inset
+
+ to party 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ assuming some 
+\begin_inset Formula $\left[a\right]_{i}$
+\end_inset
+
+ is stored, denoted by 
+\begin_inset Formula $P_{j}:a\Leftarrow\left[a\right]_{i}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Party 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ learns 
+\begin_inset Formula $a$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Manipulation commands of 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+\shape smallcaps
+add
+\family default
+\series default
+\shape default
+ of two values 
+\begin_inset Formula $a,b\in\mathbb{F}$
+\end_inset
+
+, assuming some 
+\begin_inset Formula $\left[a\right]_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $\left[b\right]_{i}$
+\end_inset
+
+ is stored
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Denoted by 
+\begin_inset Formula $\left[a+b\right]_{i}\leftarrow\left[a\right]_{i}+\left[b\right]_{i}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+\shape smallcaps
+multiplication by a constant
+\family default
+\series default
+\shape default
+ of 
+\begin_inset Formula $a\in\mathbb{F}$
+\end_inset
+
+ with an 
+\begin_inset Formula $\alpha\in\mathbb{F}$
+\end_inset
+
+, assuming some 
+\begin_inset Formula $\left[a\right]_{i}$
+\end_inset
+
+ is stored
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Denoted by 
+\begin_inset Formula $\left[\alpha a\right]_{i}\leftarrow\alpha\left[a\right]_{i}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+\shape smallcaps
+transfer
+\family default
+\series default
+\shape default
+ of 
+\begin_inset Formula $a\in\mathbb{F}$
+\end_inset
+
+ to all parties assuming some 
+\begin_inset Formula $\left[a\right]_{i}$
+\end_inset
+
+ is stored
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ learns 
+\begin_inset Formula $a$
+\end_inset
+
+ and commits to it, denoted by 
+\begin_inset Formula $\left[a\right]_{j}\leftarrow\left[a\right]_{i}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+\shape smallcaps
+multiplication
+\family default
+\series default
+\shape default
+ of two values 
+\begin_inset Formula $a,b\in\mathbb{F}$
+\end_inset
+
+, assuming some 
+\begin_inset Formula $\left[a\right]_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $\left[b\right]_{i}$
+\end_inset
+
+ is stored
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Denoted by 
+\begin_inset Formula $\left[a\cdot b\right]_{i}\leftarrow\left[a\right]_{i}\cdot\left[b\right]_{i}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Implementation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The 
+\family typewriter
+\series bold
+\shape smallcaps
+transfer
+\family default
+\series default
+\shape default
+ and 
+\family typewriter
+\series bold
+\shape smallcaps
+multiplication
+\family default
+\series default
+\shape default
+ commands are high level commands
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Can be implemented using the other commands
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+As an example we show how to implement the 
+\family typewriter
+\series bold
+\shape smallcaps
+multiplication
+\family default
+\series default
+\shape default
+ command
+\end_layout
+
+\begin_layout Itemize
+For brevity we omit here the implementation of the 
+\family typewriter
+\series bold
+\shape smallcaps
+transfer
+\family default
+\series default
+\shape default
+ command
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Details can be found in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "CDN09"
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+The 
+\family typewriter
+\series bold
+\shape smallcaps
+multiplication
+\family default
+\series default
+\shape default
+ command
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+We implement 
+\begin_inset Formula $\left[a\cdot b\right]_{i}\leftarrow\left[a\right]_{i}\cdot\left[b\right]_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{i}:\left[c\right]_{i}\Leftarrow a\cdot b$
+\end_inset
+
+ (
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ knows 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ is honest, 
+\begin_inset Formula $c$
+\end_inset
+
+ will be correct.
+ But 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ might cheat.
+ Hence every 
+\begin_inset Formula $P_{k}$
+\end_inset
+
+ carries out the following consistency check:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ chooses 
+\begin_inset Formula $\alpha\in\mathbb{F}$
+\end_inset
+
+ uniform at random
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{i}:\left[\alpha\right]_{i}\Leftarrow\alpha$
+\end_inset
+
+ (
+\family typewriter
+\series bold
+\shape smallcaps
+commit
+\family default
+\series default
+\shape default
+ to 
+\begin_inset Formula $\alpha$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{i}:\left[\gamma\right]_{i}\Leftarrow\alpha b$
+\end_inset
+
+ (
+\family typewriter
+\series bold
+\shape smallcaps
+commit
+\family default
+\series default
+\shape default
+ to 
+\begin_inset Formula $\alpha b$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{k}$
+\end_inset
+
+ broadcasts a 
+\series bold
+challenge
+\series default
+ 
+\begin_inset Formula $e\in\mathbb{F}$
+\end_inset
+
+ uniform at random
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\left[A\right]_{i}\leftarrow e\left[a\right]_{i}+\left[\alpha\right]_{i}$
+\end_inset
+
+; 
+\begin_inset Formula $A\Leftarrow\left[A\right]_{i}$
+\end_inset
+
+ (
+\family typewriter
+\series bold
+\shape smallcaps
+open
+\family default
+\series default
+\shape default
+ 
+\begin_inset Formula $A$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\left[D\right]_{i}\leftarrow A\left[b\right]_{i}-e\left[c\right]_{i}-\left[\gamma\right]_{i}$
+\end_inset
+
+; 
+\begin_inset Formula $D\Leftarrow\left[D\right]_{i}$
+\end_inset
+
+ (
+\family typewriter
+\series bold
+\shape smallcaps
+open
+\family default
+\series default
+\shape default
+ 
+\begin_inset Formula $D$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Enumerate
+The proof is accepted if 
+\begin_inset Formula $D=0$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+The 
+\family typewriter
+\series bold
+\shape smallcaps
+multiplication
+\family default
+\series default
+\shape default
+ command
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+If 
+\begin_inset Formula $\left[c\right]_{i}=\left[a\right]_{i}\cdot\left[b\right]_{i}$
+\end_inset
+
+ then 
+\begin_inset Formula $D=0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ cheated and committed to a 
+\begin_inset Formula $c=a\cdot b+\Delta$
+\end_inset
+
+,
+\begin_inset Newline newline
+\end_inset
+
+then 
+\begin_inset Formula $D\neq0$
+\end_inset
+
+ with probability 
+\begin_inset Formula $\left|\mathbb{F}\right|^{-1}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+As 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\mathbb{F}$
+\end_inset
+
+ is finite, 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $D=0$
+\end_inset
+
+ can still happen coincidentally
+\end_layout
+
+\begin_layout Itemize
+There are 
+\begin_inset Formula $n-t>n/2$
+\end_inset
+
+ honest parties, so probability that all proofs of honest parties are accepted
+ in the case of cheating is 
+\begin_inset Formula $\leq\left|\mathbb{F}\right|^{-n/2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+By repeating the proof several times, probability can be further reduced
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+We now present the actual protocol using 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+The active secure protocol (I)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+
+\series bold
+Input sharing
+\end_layout
+
+\begin_layout Itemize
+Party 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ holds input 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ and shares it using Shamir's scheme
+\end_layout
+
+\begin_layout Itemize
+Ensure correct shares and that parties are committed to their shares
+\end_layout
+
+\begin_layout Standard
+Protocol
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{i}:\left[x_{i}\right]_{i}\Leftarrow x_{i}$
+\end_inset
+
+ (
+\family typewriter
+\series bold
+\shape smallcaps
+commit
+\family default
+\series default
+\shape default
+ to input)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ chooses a polynomial 
+\begin_inset Formula $\mathscr{P}_{i}\left(z\right)=x_{i}+\sum_{j=1}^{t}\alpha_{j}z^{j}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+uniform at random
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{i}:\left[\alpha_{j}\right]_{i}\Leftarrow\alpha_{j}$
+\end_inset
+
+, 
+\begin_inset Formula $\forall j$
+\end_inset
+
+ (
+\family typewriter
+\series bold
+\shape smallcaps
+commit
+\family default
+\series default
+\shape default
+ to coefficients)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{i}:\left[\mathscr{P}_{i}\left(P_{\ell}\right)\right]_{i}\leftarrow x_{i}+\sum_{j=1}^{t}\left[\alpha_{j}\right]_{i}P_{\ell}^{j}$
+\end_inset
+
+, 
+\begin_inset Formula $\ell=1,\ldots,n$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+(evaluating the shares for all parties)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\left[\mathscr{P}_{i}\left(P_{\ell}\right)\right]_{\ell}\leftarrow\left[\mathscr{P}_{i}\left(P_{\ell}\right)\right]_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $\ell=1,\ldots,n$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+(
+\family typewriter
+\series bold
+\shape smallcaps
+transfer
+\family default
+\series default
+\shape default
+ of all shares to the respective parties)
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+The active secure protocol (II)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+
+\series bold
+Arithmetic operations
+\end_layout
+
+\begin_layout Itemize
+Function 
+\begin_inset Formula $f$
+\end_inset
+
+ was assumed to be represented by an arithmetic circuit
+\end_layout
+
+\begin_layout Standard
+Addition
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\left[c\right]_{i}\leftarrow\left[a\right]_{i}+\left[b\right]_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Multiplication
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\left[d_{i}\right]_{i}\leftarrow\left[a_{i}\right]_{i}\cdot\left[b_{i}\right]_{i}$
+\end_inset
+
+ (local multiplication)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ shares 
+\begin_inset Formula $\left[d_{i}\right]_{i}$
+\end_inset
+
+ (like in input sharing part),
+\begin_inset Newline newline
+\end_inset
+
+hence 
+\begin_inset Formula $P_{\ell}$
+\end_inset
+
+ is committed to 
+\begin_inset Formula $\left[d_{i\ell}\right]_{\ell}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\left[c_{\ell}\right]_{\ell}\leftarrow\sum_{i=1}^{n}r_{i}\left[d_{i\ell}\right]_{\ell}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+(recombination with recombination vector 
+\begin_inset Formula $r_{1},\ldots,r_{n}$
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+The active secure protocol (III)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+
+\series bold
+Reconstruction
+\end_layout
+
+\begin_layout Itemize
+Party 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ committed to share 
+\begin_inset Formula $y_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ is supposed to learn 
+\begin_inset Formula $y$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{j}:y_{i}\Leftarrow\left[y_{i}\right]_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $i=1,\ldots,n$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note:
+\end_layout
+
+\begin_layout Itemize
+If share 
+\begin_inset Formula $y_{i}$
+\end_inset
+
+ is stored in 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+, it is consistent
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ cheats, it might be not recorded and the opening fails
+\end_layout
+
+\begin_layout Itemize
+As there are 
+\begin_inset Formula $n-t>t$
+\end_inset
+
+ honest parties, still can reconstruct 
+\begin_inset Formula $y$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Security of the protocol
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The protocol ensures correct and consistent shares at every point
+\end_layout
+
+\begin_layout Itemize
+However, a corrupted party might refuse to carry out a given command
+\end_layout
+
+\begin_layout Itemize
+If this happens with party 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Input phase: other parties take input 
+\begin_inset Formula $x_{j}=0$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+and 
+\begin_inset Formula $0$
+\end_inset
+
+-polynomial for 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Addition cannot fail
+\end_layout
+
+\begin_layout Itemize
+Multiplication: if 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ has been disqualified, open its input and restart the calculation and openly
+ simulate this party
+\end_layout
+
+\begin_layout Itemize
+Reconstruction was already discussed
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Implementation of 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ (I)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Import question: how to implement the ideal functional 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ by a protocol 
+\begin_inset Formula $\pi_{\mathrm{COM}}$
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Itemize
+We will emulate it by all (honest) parties
+\end_layout
+
+\begin_layout Itemize
+Assume information-theoretic scenario with 
+\begin_inset Formula $t<n/3$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In the cryptographic scenario can relax to 
+\begin_inset Formula $t<n/2$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+We just give an outline of the realization
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Implementation of 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ (II)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Idea: can implement 
+\family typewriter
+\series bold
+\shape smallcaps
+commit
+\family default
+\series default
+\shape default
+ of party 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ to 
+\begin_inset Formula $a\in\mathbb{F}$
+\end_inset
+
+ by using a SSS
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Then we easy to implement 
+\family typewriter
+\series bold
+\shape smallcaps
+open
+\family default
+\series default
+\shape default
+, 
+\family typewriter
+\series bold
+\shape smallcaps
+add
+\family default
+\series default
+\shape default
+ and 
+\family typewriter
+\series bold
+\shape smallcaps
+multiplication by a constant
+\family default
+\series default
+\shape default
+ (and hence 
+\family typewriter
+\series bold
+\shape smallcaps
+transfer
+\family default
+\series default
+\shape default
+ and 
+\family typewriter
+\series bold
+\shape smallcaps
+multiplication)
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ is honest, adversary will not learn 
+\begin_inset Formula $a$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+But: If 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ is corrupted, might give 
+\series bold
+inconsistent shares
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Hence we have to 
+\series bold
+force consistent shares
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Corrupted shares
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Note that if even 
+\begin_inset Formula $<n/3$
+\end_inset
+
+ shares are corrupted, the secret is still uniquely defined
+\end_layout
+
+\begin_layout Itemize
+Consider secret 
+\begin_inset Formula $s\in\mathbb{F}$
+\end_inset
+
+ shares with polynomial 
+\begin_inset Formula $p$
+\end_inset
+
+ with 
+\begin_inset Formula $\deg p\leq t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The shares are
+\begin_inset Formula 
+\[
+\mathbf{s}=\left(p\left(P_{1}\right),\ldots,p\left(P_{n}\right)\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Consider an error 
+\begin_inset Formula $\mathbf{e}\in\mathbb{F}^{n}$
+\end_inset
+
+ with Hamming-weight 
+\begin_inset Formula $w_{\mathrm{H}}\left(\mathbf{e}\right)\leq t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Then both 
+\begin_inset Formula $\mathbf{s}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tilde{\mathbf{s}}=\mathbf{s}+\mathbf{e}$
+\end_inset
+
+ uniquely define the same 
+\begin_inset Formula $s$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Forcing consistent shares (I)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In principle can check for consistent shares, if dealer broadcasts the polynomia
+l
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+But this reveals the secret
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+Instead use algorithm:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ shares secret 
+\begin_inset Formula $s\in\mathbb{F}$
+\end_inset
+
+ with shares 
+\begin_inset Formula $\left\{ s_{i}\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ picks a 
+\begin_inset Formula $r\in\mathbb{F}$
+\end_inset
+
+ uniform at random and shares 
+\begin_inset Formula $\left\{ r_{i}\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+A challenge 
+\begin_inset Formula $e\in\mathbb{F}$
+\end_inset
+
+ is chosen and 
+\begin_inset Formula $\forall i$
+\end_inset
+
+ party 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ computes
+\begin_inset Formula 
+\[
+a_{i}=e\cdot s_{i}+r_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Then make consistency check of 
+\begin_inset Formula $\left\{ a_{i}\right\} $
+\end_inset
+
+ for value 
+\begin_inset Formula $a=e\cdot s+r$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Forcing consistent shares (II)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Value 
+\begin_inset Formula $a$
+\end_inset
+
+ is randomly distributed, revealing is unproblematic
+\end_layout
+
+\begin_layout Itemize
+If shares 
+\begin_inset Formula $\left\{ s_{i}\right\} $
+\end_inset
+
+ and 
+\begin_inset Formula $\left\{ r_{i}\right\} $
+\end_inset
+
+ are consistent, so are the 
+\begin_inset Formula $\left\{ a_{i}\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Otherwise probability that the 
+\begin_inset Formula $\left\{ a_{i}\right\} $
+\end_inset
+
+ are consistent by
+\begin_inset Newline newline
+\end_inset
+
+coincident is 
+\begin_inset Formula $\left|\mathbb{F}\right|^{-1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+What if the 
+\begin_inset Formula $\left\{ a_{i}\right\} $
+\end_inset
+
+ are consistent, but a corrupted party broadcasts a value 
+\begin_inset Formula $\tilde{a}_{i}\neq a_{i}$
+\end_inset
+
+?
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We employ 
+\series bold
+dispute control
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Dispute control (I)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+With each party we associate a public 
+\series bold
+dispute set
+\series default
+ 
+\begin_inset Formula $D_{i}\subseteq\left\{ P_{1},\ldots,P_{n}\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+At the beginning 
+\begin_inset Formula $D_{i}=\textrm{Ø}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+If some party 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ broadcasts an inconsistent share 
+\begin_inset Formula $\tilde{a}_{j}$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ is added to 
+\begin_inset Formula $D_{i}$
+\end_inset
+
+ (
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ is dealer)
+\end_layout
+
+\begin_layout Itemize
+If dealer 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ is honest 
+\begin_inset Formula $P_{j}\in D_{i}$
+\end_inset
+
+ means that 
+\begin_inset Formula $P_{j}$
+\end_inset
+
+ is corrupted
+\end_layout
+
+\begin_layout Itemize
+Test is repeated with 
+\begin_inset Formula $a_{j}=0$
+\end_inset
+
+ (
+\series bold
+corrected sharing
+\series default
+)
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Dispute control (II)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+If in one of the repetitions:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ broadcasts a polynomial with 
+\begin_inset Formula $p\left(P_{j}\right)\ne0$
+\end_inset
+
+ for 
+\begin_inset Formula $P_{j}\in D_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\left|D_{i}\right|>t$
+\end_inset
+
+ (at least one honest party is in dispute with 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Then: remaining parties accuse dealer 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ of being corrupt
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+All messages from 
+\begin_inset Formula $P_{i}$
+\end_inset
+
+ will be ignored from now on
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Employing dispute control allows us to ensure consistent shares and to implement
+ 
+\begin_inset Formula $\mathcal{F}_{\mathrm{COM}}$
+\end_inset
+
+ (which emulates 
+\begin_inset Formula $\mathcal{F}_{\mathrm{SFE}}^{f}$
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Conclusions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We showed how to implement MPCs using 
+\series bold
+Shamir's Scheme
+\end_layout
+
+\begin_layout Itemize
+For a 
+\series bold
+passive
+\series default
+ threshold adversary we have to require 
+\begin_inset Formula $t<n/2$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+For an 
+\series bold
+active
+\series default
+ threshold adversary in the information-theoretic scenario we need 
+\begin_inset Formula $t<n/3$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Protect against active attacks with 
+\series bold
+VSS
+\series default
+s and 
+\series bold
+dispute control
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\series bold
+For more information refer to Ref.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "CDN09,HM97"
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section*
+\start_of_appendix
+Appendix
+\end_layout
+
+\begin_layout Subsection*
+For Further Reading
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Bibliography
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "literature"
+options "bibtotoc,plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_body
+\end_document
